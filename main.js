@@ -37,6 +37,25 @@ async function bukaCmd() {
   });
 }
 
+// Fungsi bukaCMD2
+async function bukaCmd2() {
+  console.log("==Fungsi bukaCmd2 dipanggil");
+
+  const perintah = `start cmd.exe /k "${`echo.`}&&${`echo.`}&&${`echo.`}&&${`echo.`}&&${`echo.`}&&${`echo ============================================================================`}&&${`echo Evolusi Parking . 2025`}&&${`echo ============================================================================`}&&${`echo Gunakan terminal untuk keadaan darurat seperti error install paket dan sebagainya.`} && ${`echo Silahkan minimize CMD bila saat ini sedang tidak dibutuhkan.`} &&${` echo.`} && ${`echo Versi Node.js`}&&${`node -v`} && ${`echo ============================================================================`} && ${`echo.`}&&${`echo.`}&&${`echo.`}&&${`echo.`}&&${`echo.`}"`;
+
+  return new Promise((resolve) => {
+    exec(perintah, { windowsHide: false }, (error) => {
+      if (error) {
+        console.error("❌ Gagal buka CMD:", error);
+        resolve("❌ Gagal membuka CMD: " + error.message);
+      } else {
+        console.log("✅ CMD berhasil dibuka");
+        resolve("✅ CMD berhasil dibuka");
+      }
+    });
+  });
+}
+
 // Fungsi cekVersiNode
 async function cekVersiNode() {
   console.log("==Fungsi cekVersiNode dipanggil");
@@ -55,23 +74,27 @@ async function cekVersiNode() {
 }
 
 // Fungsi installPackage
-async function installPackage(event) {
+async function installPackage(event, customChannel = "install-status") {
   console.log("==Fungsi installPackage dipanggil");
   const webContents = event.sender;
-  webContents.send("install-status", "Sedang Menginstal...");
-  exec(
-    "npm install",
-    { cwd: path.resolve(__dirname) },
-    (error, stdout, stderr) => {
-      if (error) {
-        console.error(stderr);
-        return webContents.send("install-status", "Gagal menginstal paket.");
+
+  return new Promise((resolve) => {
+    webContents.send(customChannel, "Sedang Menginstal...");
+    exec(
+      "npm install",
+      { cwd: path.resolve(__dirname) },
+      (error, stdout, stderr) => {
+        if (error) {
+          console.error(stderr);
+          webContents.send(customChannel, "Gagal menginstal paket.");
+          return resolve(false); // ← ini penting
+        }
+        console.log("✅" + stdout);
+        webContents.send(customChannel, "✅ Berhasil menginstal paket.");
+        resolve(true); // ← ini juga penting
       }
-      console.log("✅" + stdout);
-      webContents.send("install-status", "✅ Berhasil menginstal paket.");
-    }
-  );
-  return;
+    );
+  });
 }
 
 // Fungsi checkAndInstall
@@ -137,7 +160,7 @@ ipcMain.handle("cek-versi-node", async () => {
 });
 
 // 🛠️ Tambahan: Handler install-package
-ipcMain.on("install-package", async(event) => {
+ipcMain.on("install-package", async (event) => {
   console.log("📥 IPC: install-package");
   return await installPackage(event);
 });
@@ -148,10 +171,96 @@ ipcMain.on("check-and-install", async (event) => {
   return await checkAndInstall(event);
 });
 
-// 🛠️ Tambahan: Handler open-cmd-dan-check-node
-ipcMain.handle("open-cmd-dan-check-node", () => {
-  console.log("📥 IPC: open-cmd-dan-check-node");
-  return;
+// 🛠️ Tambahan: Handler open-cmd-check-node-dan-install-paket
+ipcMain.on("open-cmd-check-node-dan-install-paket", async (event) => {
+  console.log("📥 IPC: open-cmd-check-node-dan-install-paket");
+  const hasilCmd = await bukaCmd();
+  const webContents = event.sender;
+
+  let hasilVersi;
+  try {
+    hasilVersi = await cekVersiNode();
+    webContents.send(
+      "open-cmd-check-node-dan-install-paket-status",
+      `✅ CMD dibuka.\nVersi Node.js: ${hasilVersi}`
+    );
+    setTimeout(async () => {
+      // 🧩 Embed: langsung panggil installPackage()
+      // 🔧 Install dan deteksi hasil
+      const sukses = await installPackage(
+        event,
+        "open-cmd-check-node-dan-install-paket-status"
+      );
+      if (sukses) {
+        setTimeout(() => {
+          webContents.send(
+            "open-cmd-check-node-dan-install-paket-status",
+            "🚀 Seluruh proses berhasil."
+          );
+        }, 1000);
+      } else {
+        setTimeout(() => {
+          webContents.send(
+            "open-cmd-check-node-dan-install-paket-status",
+            "⚠️ Instalasi gagal setelah proses awal berhasil."
+          );
+        }, 1000);
+      }
+    }, 1000);
+  } catch (err) {
+    webContents.send(
+      "open-cmd-check-node-dan-install-paket-status",
+      `❌ CMD dibuka, tapi gagal cek versi Node.js: ${err}`
+    );
+    return; // Berhenti jika gagal cek versi
+  }
+});
+
+// 🛠️ Tambahan: Handler open-cmd-check-node-dan-install-paket-v2
+ipcMain.on("open-cmd-check-node-dan-install-paket-v2", async (event) => {
+  console.log("📥 IPC: open-cmd-check-node-dan-install-paket-v2");
+  bukaCmd2();
+  const webContents = event.sender;
+
+  let hasilVersi;
+  setTimeout(async () => {
+    try {
+      hasilVersi = await cekVersiNode();
+      webContents.send(
+        "open-cmd-check-node-dan-install-paket-v2-status",
+        `✅ CMD dibuka.\nVersi Node.js: ${hasilVersi}`
+      );
+      setTimeout(async () => {
+        // 🧩 Embed: langsung panggil installPackage()
+        // 🔧 Install dan deteksi hasil
+        const sukses = await installPackage(
+          event,
+          "open-cmd-check-node-dan-install-paket-v2-status"
+        );
+        if (sukses) {
+          setTimeout(() => {
+            webContents.send(
+              "open-cmd-check-node-dan-install-paket-v2-status",
+              "🚀 Seluruh proses berhasil."
+            );
+          }, 1000);
+        } else {
+          setTimeout(() => {
+            webContents.send(
+              "open-cmd-check-node-dan-install-paket-v2-status",
+              "⚠️ Instalasi gagal setelah proses awal berhasil."
+            );
+          }, 1000);
+        }
+      }, 1000);
+    } catch (err) {
+      webContents.send(
+        "open-cmd-check-node-dan-install-paket-v2-status",
+        `❌ CMD dibuka, tapi gagal cek versi Node.js: ${err}`
+      );
+      return; // Berhenti jika gagal cek versi
+    }
+  }, 2000);
 });
 
 // Tambahkan ini hanya saat development

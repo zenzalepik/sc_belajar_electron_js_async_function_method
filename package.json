@@ -13,6 +13,5 @@
     "electron-reload": "^2.0.0-alpha.1"
   },
   "dependencies": {
-    "strip-ansi": "^6.0.1"
   }
 }

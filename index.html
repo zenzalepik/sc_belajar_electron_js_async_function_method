@@ -86,19 +86,35 @@
   </hr>
   <hr>
   </hr>
-  <button id="openCmddanCheckNodeBtn">Buka CMD dan Check Versi Node Js di CMD</button>
-  <p id="openCmddanCheckNode"></p>
+  <button id="openCmdCheckNodeDanInstallPaketBtn">Buka CDM, Cek Node.js dan Install Paket</button>
+  <p id="openCmdCheckNodeDanInstallPaket"></p>
   <script>
-    const openCmddanCheckNodeBtn = document.getElementById('openCmddanCheckNodeBtn');
-    const openCmddanCheckNode = document.getElementById('openCmddanCheckNode');
+    const openCmdCheckNodeDanInstallPaketBtn = document.getElementById('openCmdCheckNodeDanInstallPaketBtn');
+    const openCmdCheckNodeDanInstallPaket = document.getElementById('openCmdCheckNodeDanInstallPaket');
 
-    openCmddanCheckNodeBtn.addEventListener('click', () => {
-      openCmddanCheckNode.textContent = 'Versi kode ini belum dibuat. Akan dipelajari pada materi selanjutnya Insyaa Allah.';
-      window.electronAPI.runOpenCmddanCheckNode(); // Memanggil main process
+    openCmdCheckNodeDanInstallPaketBtn.addEventListener('click', () => {
+      openCmdCheckNodeDanInstallPaket.textContent = 'Sedang Membuka CMD...';
+      window.electronAPI.runOpenCmdCheckNodeDanInstallPaket(); // Memanggil main process
     });
 
-    window.electronAPI.onOpenCmddanCheckNodeStatus((event, status) => {
-      openCmddanCheckNode.textContent = status;
+    window.electronAPI.onOpenCmdCheckNodeDanInstallPaketStatus((event, status) => {
+      openCmdCheckNodeDanInstallPaket.textContent = status;
+    });
+  </script>
+  </hr>
+  <button id="openCmdCheckNodeDanInstallPaketV2Btn">Buka CDM, Cek Node.js dan Install Paket</button>
+  <p id="openCmdCheckNodeDanInstallPaketV2"></p>
+  <script>
+    const openCmdCheckNodeDanInstallPaketV2Btn = document.getElementById('openCmdCheckNodeDanInstallPaketV2Btn');
+    const openCmdCheckNodeDanInstallPaketV2 = document.getElementById('openCmdCheckNodeDanInstallPaketV2');
+
+    openCmdCheckNodeDanInstallPaketV2Btn.addEventListener('click', () => {
+      openCmdCheckNodeDanInstallPaketV2.textContent = 'Sedang Membuka CMD...';
+      window.electronAPI.runOpenCmdCheckNodeDanInstallPaketV2(); // Memanggil main process
+    });
+
+    window.electronAPI.onOpenCmdCheckNodeDanInstallPaketV2Status((event, status) => {
+      openCmdCheckNodeDanInstallPaketV2.textContent = status;
     });
   </script>
 </body>

@@ -13,8 +13,12 @@ contextBridge.exposeInMainWorld("electronAPI", {
   onCheckAndInstallStatus: (callback) => ipcRenderer.on('check-and-install-status', callback),
 
   // Open CMD, Check Node, dan Install Package
-  runOpenCmddanCheckNode: () => ipcRenderer.send('open-cmd-dan-check-node'),
-  onOpenCmddanCheckNodeStatus: (callback) => ipcRenderer.on('open-cmd-dan-check-node-status', callback),
+  runOpenCmdCheckNodeDanInstallPaket: () => ipcRenderer.send('open-cmd-check-node-dan-install-paket'),
+  onOpenCmdCheckNodeDanInstallPaketStatus: (callback) => ipcRenderer.on('open-cmd-check-node-dan-install-paket-status', callback),
+
+  // Open CMD, Check Node, dan Install Package V2
+  runOpenCmdCheckNodeDanInstallPaketV2: () => ipcRenderer.send('open-cmd-check-node-dan-install-paket-v2'),
+  onOpenCmdCheckNodeDanInstallPaketV2Status: (callback) => ipcRenderer.on('open-cmd-check-node-dan-install-paket-v2-status', callback),
 
   openCmddanCheckNode: () => ipcRenderer.invoke("open-cmd-dan-check-node"),
 });
