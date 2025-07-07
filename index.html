@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Electron CMD Launcher</title>
+</head>
+
+<body>
+  <h1>Belajar Electron JS</h1>
+  <button id="openCmdBtn">Buka CMD</button>
+  <p id="hasilCmd"></p>
+  <script>
+    document
+      .getElementById("openCmdBtn")
+      .addEventListener("click", async () => {
+        try {
+          const hasil = await window.electronAPI.openCmd();
+          document.getElementById("hasilCmd").textContent = hasil;
+          console.log("📥 Hasil open-cmd:", hasil);
+        } catch (err) {
+          document.getElementById("hasilCmd").textContent = "Gagal membuka CMD.";
+          console.error("❌ Error saat membuka CMD:", err);
+        }
+      });
+  </script>
+
+  <hr>
+  </hr>
+  <button id="cekVersiNodeBtn">Cek Versi Node JS</button>
+  <p id="versiNode"></p>
+  <script>
+    document
+      .getElementById("cekVersiNodeBtn")
+      .addEventListener("click", async () => {
+        try {
+          const versi = await window.electronAPI.cekVersiNode();
+          document.getElementById("versiNode").textContent = "Versi Node.js: " + versi;
+          console.log("Versi Node.js:", versi);
+        } catch (err) {
+          document.getElementById("versiNode").textContent = "Gagal ambil versi Node.js";
+          console.error("❌ Gagal ambil versi:", err);
+        }
+      });
+  </script>
+  <hr>
+  </hr>
+  <button id="installPackageBtn">Install Paket</button>
+  <pre id="installPackage"></pre>
+  <script>
+    const btn = document.getElementById('installPackageBtn');
+    const output = document.getElementById('installPackage');
+
+    btn.addEventListener('click', () => {
+      output.textContent = 'Sedang Menginstal...';
+      window.electronAPI.runInstall(); // Memanggil main process
+    });
+
+    window.electronAPI.onInstallStatus((event, status) => {
+      output.textContent = status;
+    });
+  </script>
+  <hr>
+  </hr>
+  <button id="checkAndInstallBtn">Cek Node.js dan Install Paket</button>
+  <pre id="checkAndInstall"></pre>
+  <script>
+    const checkAndInstallBtn = document.getElementById('checkAndInstallBtn');
+    const checkAndInstall = document.getElementById('checkAndInstall');
+
+    checkAndInstallBtn.addEventListener('click', () => {
+      checkAndInstall.textContent = 'Sedang Menginstal...';
+      window.electronAPI.runCheckAndInstall(); // Memanggil main process
+    });
+
+    window.electronAPI.onCheckAndInstallStatus((event, status) => {
+      checkAndInstall.textContent = status;
+    });
+  </script>
+  <hr>
+  </hr>
+
+  <hr>
+  </hr>
+  <hr>
+  </hr>
+  <hr>
+  </hr>
+  <button id="openCmddanCheckNodeBtn">Buka CMD dan Check Versi Node Js di CMD</button>
+  <p id="openCmddanCheckNode"></p>
+  <script>
+    const openCmddanCheckNodeBtn = document.getElementById('openCmddanCheckNodeBtn');
+    const openCmddanCheckNode = document.getElementById('openCmddanCheckNode');
+
+    openCmddanCheckNodeBtn.addEventListener('click', () => {
+      openCmddanCheckNode.textContent = 'Versi kode ini belum dibuat. Akan dipelajari pada materi selanjutnya Insyaa Allah.';
+      window.electronAPI.runOpenCmddanCheckNode(); // Memanggil main process
+    });
+
+    window.electronAPI.onOpenCmddanCheckNodeStatus((event, status) => {
+      openCmddanCheckNode.textContent = status;
+    });
+  </script>
+</body>
+
+</html>
